@@ -19,6 +19,17 @@
 # Mono auto generated files
 mono_crash.*
 
+# Angular build outputs
+dist/
+out-tsc/
+.angular/
+
+# Angular temporary files
+.tmp/
+
+# Environment files (si manejas variables sensibles en entornos)
+src/environments/environment*.ts
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
