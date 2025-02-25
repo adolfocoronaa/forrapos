@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, NonNullableFormBuilder, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule], 
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -12,18 +15,18 @@ export class RegisterComponent {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: NonNullableFormBuilder, private http: HttpClient) {
     this.registerForm = this.fb.group({
-      name: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      confirmPassword: new FormControl('', Validators.required)
+      name: this.fb.control('', Validators.required),
+      email: this.fb.control('', [Validators.required, Validators.email]),
+      password: this.fb.control('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword: this.fb.control('', Validators.required)
     }, { validators: this.passwordMatchValidator });
   }
 
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { mismatch: true };
   }
 
