@@ -4,41 +4,49 @@ using System.Threading.Tasks;
 using BCrypt.Net;
 using Inventario.Models;
 using Inventario.Data;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 [Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    
-    public AuthController(ApplicationDbContext context)
-    {
+
+    public AuthController(ApplicationDbContext context) {
         _context = context;
     }
-    
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUser model)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
 
-        if (await _context.Usuarios.AnyAsync(u => u.Email == model.Email))
+    [HttpPost("register")]
+    public async Task<ActionResult> Register([FromBody] RegisterUser model) {
+        if (_context.Usuarios.Any(u => u.Email == model.Email))
         {
-            return BadRequest(new { message = "El correo ya está en uso." });
+            return BadRequest(new { message = "El correo ya está registrado." });
         }
-        
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-        var user = new Usuario 
-        { 
-            Name = model.Name, 
-            Email = model.Email, 
-            Password = hashedPassword 
+
+        var usuario = new Usuario
+        {
+            Name = model.Name,
+            Email = model.Email,
+            Password = BCrypt.Net.BCrypt.HashPassword(model.Password), // Solo una vez
+            Rol = model.Rol ?? "Empleado" // Valor por defecto si es nulo
         };
-        
-        await _context.Usuarios.AddAsync(user);
+
+        _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
-        
-        return Ok(new { message = "Usuario registrado correctamente." });
+
+        return Ok(new { message = "Usuario registrado con éxito." });
     }
+
+    [HttpPost("login")]
+    public async Task<ActionResult> Login([FromBody] LoginUser model) {
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Name == model.Name);
+        
+        if (usuario == null || !BCrypt.Net.BCrypt.Verify(model.Password, usuario.Password))
+        {
+            return Unauthorized(new { message = "Correo o contraseña incorrectos" });
+        }
+
+        return Ok(new { message = "Inicio de sesión exitoso", usuario = new { usuario.Id, usuario.Name, usuario.Email, usuario.Rol } });
+    }
+
 }

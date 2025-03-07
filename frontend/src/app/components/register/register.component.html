@@ -1,61 +1,48 @@
-<div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-center mb-4">Registro de Usuario</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-lg p-4 rounded" style="max-width: 400px; width: 100%; background-color: #f8f9fa;">
+    <h2 class="text-center mb-4 text-primary">Registro de Usuario</h2>
+    
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Nombre</label>
-        <input
-          type="text"
-          formControlName="name"
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-red-500 text-sm">
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Nombre</label>
+        <input type="text" formControlName="name" class="form-control rounded-pill shadow-sm" />
+        <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger small">
           El nombre es obligatorio.
         </div>
       </div>
-  
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Email</label>
-        <input
-          type="email"
-          formControlName="email"
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500 text-sm">
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Email</label>
+        <input type="email" formControlName="email" class="form-control rounded-pill shadow-sm" />
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger small">
           Ingresa un email válido.
         </div>
       </div>
-  
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Contraseña</label>
-        <input
-          type="password"
-          formControlName="password"
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-sm">
+
+      <!-- Contraseña -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Contraseña</label>
+        <input type="password" formControlName="password" class="form-control rounded-pill shadow-sm" />
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger small">
           La contraseña debe tener al menos 6 caracteres.
         </div>
       </div>
-  
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Confirmar Contraseña</label>
-        <input
-          type="password"
-          formControlName="confirmPassword"
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div *ngIf="registerForm.hasError('mismatch')" class="text-red-500 text-sm">
-            Las contraseñas no coinciden.
+
+      <!-- Confirmar Contraseña -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Confirmar Contraseña</label>
+        <input type="password" formControlName="confirmPassword" class="form-control rounded-pill shadow-sm" />
+        <div *ngIf="registerForm.hasError('mismatch')" class="text-danger small">
+          Las contraseñas no coinciden.
         </div>
       </div>
-  
-      <button
-        type="submit"
-        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 disabled:bg-gray-400"
-        [disabled]="registerForm.invalid"
-      >
+
+      <!-- Botón de Registro -->
+      <button type="submit" class="btn btn-primary w-100 rounded-pill shadow-sm" [disabled]="registerForm.invalid">
         Registrarse
       </button>
     </form>
   </div>
-  
+</div>
