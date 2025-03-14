@@ -8,14 +8,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   imports: [CommonModule, RouterModule, RouterOutlet], // 📌 Asegúrate de incluir RouterModule
   template: `
     <div class="min-h-screen bg-gray-100 text-center">
-      <nav class="bg-blue-600 p-4 text-white">
-        <a routerLink="/login" class="px-4" routerLinkActive="font-bold">Login</a> |
-        <a routerLink="/register" class="px-4" routerLinkActive="font-bold">Registro</a> |
-        <a routerLink="/productos" class="px-4" routerLinkActive="font-bold">Productos</a>
-      </nav>
-      <div class="container mx-auto mt-5">
-        <router-outlet></router-outlet>
-      </div>
+      <router-outlet></router-outlet>
     </div>
   `,
   styleUrls: ['./app.component.css']

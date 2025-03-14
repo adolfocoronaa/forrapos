@@ -1,0 +1,89 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block bg-dark sidebar text-white p-3">
+      <h3 class="text-white">Forage POS</h3>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="#">Forage POS</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="#">Inventory</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="#">Employees</a></li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link text-white" href="/admin">Editar usuarios</a>
+        </li>
+      </ul>
+    </nav> <!-- Se cierra correctamente el nav aquí -->
+
+    <div class="col">
+      <h4 class="text-primary">Dashboard</h4>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <div class="card bg-primary text-white text-center shadow p-3">
+            <h5>Today's Sales</h5>
+            <h2>$1,234.56</h2>
+            <small>+12.5% vs yesterday</small>
+          </div>
+        </div> <!-- Cierre añadido aquí -->
+
+        <div class="col-md-3 mb-3">
+          <div class="card bg-light text-center shadow p-3">
+            <h5>Weekly Sales</h5>
+            <h2>$8,234.56</h2>
+            <p class="small">+5.2% vs yesterday</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <h4 class="text-primary">Recent Sales</h4>
+          <div class="card shadow p-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Customer</th>
+                  <th>Products</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>John Doe</td>
+                  <td>Organic Vegetables (x3)</td>
+                  <td>$45.99</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Jane Smith</td>
+                  <td>Fresh Herbs Bundle</td>
+                  <td>$23.50</td>
+                  <td><span class="badge bg-warning">Processing</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <h4 class="text-danger">Inventory Alerts</h4>
+          <div class="card bg-light shadow p-3">
+            <ul>
+              <li class="text-danger">Low Stock: Organic Vegetables</li>
+              <li class="text-warning">Running Low: Fresh Herbs</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <h4 class="text-secondary">Quick Links</h4>
+          <div class="card shadow p-3">
+            <button class="btn btn-outline-primary mb-2 w-100">New Order</button>
+            <button class="btn btn-outline-success mb-2 w-100">Employee Schedule</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

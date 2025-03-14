@@ -1,0 +1,31 @@
+<div class="container">
+    <h2>Administración de Usuarios</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <select [(ngModel)]="user.rol">
+              <option value="Empleado">Empleado</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-primary" (click)="updateRole(user.id, user.rol)">Actualizar Rol</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

@@ -1,0 +1,14 @@
+.card {
+    border-radius: 15px;
+  }
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  .card-text {
+    font-weight: bold;
+  }
+  .list-group-item {
+    font-size: 1rem;
+  }
+  
