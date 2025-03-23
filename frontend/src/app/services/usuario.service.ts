@@ -14,7 +14,7 @@ interface Usuario {
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = 'http://localhost:5233/api/usuarios';
+  private apiUrl = 'http://localhost:5233/api/usuarios'; //URL  de la API del backend
 
   constructor(private http: HttpClient) { }
 

@@ -1,10 +1,31 @@
-public class RegisterUser
+using System.ComponentModel.DataAnnotations;
+
+namespace Inventario.Models
 {
-    public string Name { get; set; }
+    /// <summary>
+    /// Modelo de datos para el registro de un nuevo usuario.
+    /// Contiene información básica como nombre, email, contraseña y rol.
+    /// </summary>
+    public class RegisterUser
+    {
+        /// <summary>
+        /// Nombre de usuario.
+        /// </summary>
+        public string Name { get; set; }
 
-    public string Email { get; set; }
+        /// <summary>
+        /// Correo electrónico del usuario.
+        /// </summary>
+        public string Email { get; set; }
 
-    public string Password { get; set; }
+        /// <summary>
+        /// Contraseña para el acceso del usuario.
+        /// </summary>
+        public string Password { get; set; }
 
-    public string Rol { get; set; } = "Empleado"; // Valor por defecto
+        /// <summary>
+        /// Rol asignado al usuario. Por defecto es 'Empleado'.
+        /// </summary>
+        public string Rol { get; set; } = "Empleado";
+    }
 }

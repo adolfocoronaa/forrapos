@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Inventario.Models;
 
 namespace Inventario.Data
+
+// Esta clase es creada para configurar el contexto de nuestra base de datos para las tablas
+
 {
     public class ApplicationDbContext : DbContext
     {

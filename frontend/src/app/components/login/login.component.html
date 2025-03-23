@@ -1,18 +1,30 @@
+<!-- ================================================================
+  Pantalla de Autenticación - Login y Registro
+  Descripción: Página de inicio de sesión con formulario reactivo
+               y modal para registro de nuevos usuarios.
+  Fecha: 20/03/2025
+  Dependencias: Angular Forms (ReactiveFormsModule), Bootstrap 5, Bootstrap Icons
+===================================================================-->
+
+<!-- Contenedor principal centrado vertical y horizontal -->
 <div class="container vh-100 d-flex justify-content-center align-items-center">
+
+  <!-- Tarjeta de login con imagen y formulario -->
   <div class="row w-100 shadow-lg rounded" style="max-width: 900px; background-color: #f8f9fa;">
-    
-    <!-- Imagen a la izquierda -->
+
+    <!-- Columna izquierda con imagen decorativa (oculta en móviles) -->
     <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center p-4">
       <img src="img/logo.png" alt="Login Image" class="img-fluid rounded">
     </div>
-    
-    <!-- Formulario de login -->
+
+    <!-- Formulario de inicio de sesión -->
     <div class="col-md-6 p-5">
       <h2 class="text-center mb-4" style="color: #002147;">Iniciar Sesión</h2>
-      
+
+      <!-- Formulario reactivo con validaciones -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         
-        <!-- Usuario -->
+        <!-- Campo Usuario -->
         <div class="mb-3">
           <label for="usuario" class="form-label fw-bold">Usuario</label>
           <input type="text" id="name" formControlName="name" class="form-control rounded-pill shadow-sm" placeholder="Ingresa tu usuario">
@@ -20,8 +32,8 @@
             El usuario es obligatorio.
           </div>
         </div>
-        
-        <!-- Contraseña -->
+
+        <!-- Campo Contraseña -->
         <div class="mb-3">
           <label for="password" class="form-label fw-bold">Contraseña</label>
           <input type="password" id="password" formControlName="password" class="form-control rounded-pill shadow-sm" placeholder="Ingresa tu contraseña">
@@ -29,52 +41,55 @@
             La contraseña debe tener al menos 6 caracteres.
           </div>
         </div>
-        
-        <!-- Recordarme -->
+
+        <!-- Checkbox "Recordarme" -->
         <div class="d-flex align-items-center mb-3">
           <input type="checkbox" id="rememberMe" formControlName="rememberMe" class="form-check-input" style="width: 20px; height: 20px; margin-right: 10px;">
           <label for="rememberMe" class="form-check-label">Recordarme</label>
         </div>
 
-        
-        <!-- Botón de Inicio de Sesión -->
-        <button type="submit" class="btn w-100 rounded-pill shadow-sm" style="background-color: #002147; color: white;" [disabled]="loginForm.invalid">
+        <!-- Botón de envío -->
+        <button type="submit" class="btn w-100 rounded-pill shadow-sm"
+                style="background-color: #002147; color: white;"
+                [disabled]="loginForm.invalid">
           Entrar
         </button>
-        
+
         <!-- Enlaces adicionales -->
         <div class="text-center mt-3">
           <a href="#" class="text-primary">¿Olvidaste tu contraseña?</a>
         </div>
         <div class="text-center mt-3">
-          <span>¿No tienes una cuenta? <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#registerModal">Regístrate ahora</a></span>
+          <span>¿No tienes una cuenta?
+            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+              Regístrate ahora
+            </a>
+          </span>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- Modal de Registro -->
+<!-- ================================================================
+  Modal de Registro
+  Descripción: Formulario de registro para nuevos usuarios
+  con validaciones de campos y confirmación de contraseña.
+===================================================================-->
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered"> <!-- Centrado vertical -->
-    <div class="modal-content" style="border-radius: 15px; overflow: hidden;"> <!-- Bordes redondeados -->
-      
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+
       <!-- Encabezado del modal -->
-      <div class="modal-header" 
-          style="background: linear-gradient(90deg, #002147, #0056b3); 
-                  color: white; 
-                  padding: 1.5rem; 
-                  border-top-left-radius: 10px; 
-                  border-top-right-radius: 10px; position: relative;">
+      <div class="modal-header"
+           style="background: linear-gradient(90deg, #002147, #0056b3); color: white; padding: 1.5rem;">
         <h5 class="modal-title d-flex align-items-center fw-bold" id="registerModalLabel">
           <i class="bi bi-person-plus-fill me-2"></i> Registro de Usuario
         </h5>
         <!-- Botón de cierre -->
-        <button type="button" 
-                class="btn text-white border-0 p-0 shadow-none" 
-                data-bs-dismiss="modal" 
-                aria-label="Cerrar"
-                style="background: transparent; font-size: 1.5rem; position: absolute; top: 10px; right: 15px; cursor: pointer; opacity: 0.9; transition: opacity 0.3s;">
+        <button type="button" class="btn text-white border-0 p-0 shadow-none"
+                data-bs-dismiss="modal" aria-label="Cerrar"
+                style="background: transparent; font-size: 1.5rem; position: absolute; top: 10px; right: 15px;">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -82,6 +97,7 @@
       <!-- Cuerpo del modal -->
       <div class="modal-body" style="padding: 2rem;">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
+
           <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre</label>
@@ -109,7 +125,7 @@
             </div>
           </div>
 
-          <!-- Confirmar Contraseña -->
+          <!-- Confirmar contraseña -->
           <div class="mb-3">
             <label class="form-label fw-bold">Confirmar Contraseña</label>
             <input type="password" formControlName="confirmPassword" class="form-control rounded-pill shadow-sm" placeholder="Confirma tu contraseña"/>
@@ -117,11 +133,11 @@
               Las contraseñas no coinciden.
             </div>
           </div>
-          
-          <!-- Botón de Registro -->
-          <button type="submit" 
-                  class="btn w-100 rounded-pill shadow-sm" 
-                  style="background-color: #0056b3; color: white; font-weight: bold;" 
+
+          <!-- Botón de envío -->
+          <button type="submit"
+                  class="btn w-100 rounded-pill shadow-sm"
+                  style="background-color: #0056b3; color: white; font-weight: bold;"
                   data-bs-dismiss="modal"
                   [disabled]="registerForm.invalid">
             Registrarse
@@ -131,5 +147,3 @@
     </div>
   </div>
 </div>
-
-
