@@ -4,6 +4,7 @@ using Inventario.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventario.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331005220_InsertProductosIniciales")]
+    partial class InsertProductosIniciales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace Inventario.Migrations
 
                     b.HasIndex("ProveedorId");
 
-                    b.ToTable("compra", (string)null);
+                    b.ToTable("Compras");
                 });
 
             modelBuilder.Entity("Inventario.Models.DetalleCompra", b =>
@@ -78,7 +81,7 @@ namespace Inventario.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("detallecompra", (string)null);
+                    b.ToTable("DetallesCompra");
                 });
 
             modelBuilder.Entity("Inventario.Models.DetalleVenta", b =>
@@ -110,7 +113,7 @@ namespace Inventario.Migrations
 
                     b.HasIndex("VentaId");
 
-                    b.ToTable("detalleventa", (string)null);
+                    b.ToTable("DetallesVenta");
                 });
 
             modelBuilder.Entity("Inventario.Models.Producto", b =>
@@ -136,7 +139,7 @@ namespace Inventario.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("productos", (string)null);
+                    b.ToTable("Productos");
                 });
 
             modelBuilder.Entity("Inventario.Models.Proveedor", b =>
@@ -169,7 +172,7 @@ namespace Inventario.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("proveedor", (string)null);
+                    b.ToTable("Proveedores");
                 });
 
             modelBuilder.Entity("Inventario.Models.Usuario", b =>
@@ -198,7 +201,7 @@ namespace Inventario.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Inventario.Models.Venta", b =>
@@ -217,7 +220,7 @@ namespace Inventario.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ventas", (string)null);
+                    b.ToTable("Ventas");
                 });
 
             modelBuilder.Entity("Inventario.Models.Compra", b =>

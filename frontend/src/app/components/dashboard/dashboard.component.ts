@@ -15,6 +15,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DashboardService } from '../../services/dashboard.service';
+import { DashboardStats } from './dashboard-stats.model';
 
 @Component({
   selector: 'app-dashboard', // Selector que se utiliza para insertar el componente en HTML
@@ -30,17 +32,22 @@ export class DashboardComponent {
    * Esta propiedad controla la visibilidad de elementos exclusivos del rol administrador.
    */
   isAdmin: boolean = false;
+  stats: DashboardStats | null = null;
 
   /**
    * Constructor del componente
    * Realiza una verificación en localStorage para establecer el rol del usuario.
    * Si el rol es "Administrador", habilita funciones y vistas adicionales.
    */
-  constructor() {
-    const userRole = localStorage.getItem('rol'); // El rol del usuario se espera como string en localStorage
 
-    if (userRole === 'Administrador') {
-      this.isAdmin = true;
-    }
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit(): void {
+    const userRole = localStorage.getItem('rol');
+    this.isAdmin = userRole === 'Administrador';
+
+    this.dashboardService.getEstadisticas().subscribe(data => {
+      this.stats = data;
+    });
   }
 }

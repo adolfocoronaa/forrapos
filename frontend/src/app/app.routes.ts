@@ -18,6 +18,7 @@ import { ProductosComponent } from './components/productos/productos.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AuthGuard } from './guards/auth.guard';
+import { VentasComponent } from './components/ventas/ventas.component';
 
 /**
  * Rutas principales del sistema
@@ -34,6 +35,9 @@ export const routes: Routes = [
 
   /** Ruta para la administración de usuarios (protegida por AuthGuard) */
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
+
+  /** Ruta para inicio de sesión */
+  { path: 'venta', component: VentasComponent },
 
   /** Ruta comodín: redirige cualquier otra ruta a login */
   { path: '**', redirectTo: 'login', pathMatch: 'full' }

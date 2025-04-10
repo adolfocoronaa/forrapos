@@ -29,5 +29,10 @@ namespace Inventario.Models
         /// Cantidad disponible del producto en inventario.
         /// </summary>
         public int Stock { get; set; }
+
+        /// <summary>
+        /// Ruta o URL de la imagen del producto.
+        /// </summary>
+        public string? ImagenUrl { get; set; }
     }
 }

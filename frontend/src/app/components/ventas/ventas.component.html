@@ -1,0 +1,205 @@
+<div class="container">
+  <h2 class="my-4">Ventas</h2>
+
+  <!-- ==================================================
+    FILTROS DE BÚSQUEDA
+    Descripción: Filtros dinámicos para buscar ventas
+    por año, mes, estado, precio mínimo y máximo.
+  =================================================== -->
+  <div class="row g-3 mb-3">
+    <!-- Filtro por Año (Desde 2025 hasta el año actual) -->
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="filtroYear">
+        <option value="">Año</option>
+        <option *ngFor="let year of yearsArray" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+
+    <!-- Filtro por Mes (Meses en español) -->
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="filtroMes">
+        <option value="">Mes</option>
+        <option *ngFor="let mes of meses" [value]="mes">{{ mes }}</option>
+      </select>
+    </div>
+
+    <!-- Filtro por Estado (Completado o Pendiente) -->
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="filtroEstado">
+        <option value="">Estado</option>
+        <option value="Completado">Completado</option>
+        <option value="Pendiente">Pendiente</option>
+      </select>
+    </div>
+
+    <!-- Filtro por Precio Mínimo -->
+    <div class="col-md-2">
+      <input type="number" class="form-control" [(ngModel)]="filtroMin" placeholder="Precio Mín.">
+    </div>
+
+    <!-- Filtro por Precio Máximo -->
+    <div class="col-md-2">
+      <input type="number" class="form-control" [(ngModel)]="filtroMax" placeholder="Precio Máx.">
+    </div>
+
+    <!-- Botón para Aplicar Filtros -->
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100" (click)="aplicarFiltros()">
+        <i class="fa fa-filter"></i> Filtrar
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================================================
+    TABLA DE VENTAS
+    Descripción: Tabla con las ventas filtradas y sus detalles.
+  =================================================== -->
+  <table class="table table-bordered table-sm mt-3" *ngIf="nuevaVenta.detalles.length > 0">
+    <thead class="table-light">
+      <tr>
+        <th>Imagen</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of nuevaVenta.detalles; let i = index">
+        <td>
+          <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto.name }}"
+               class="img-thumbnail" width="50">
+        </td>
+        <td>{{ d.producto.name }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>${{ d.precioUnitario }}</td>
+        <td>${{ d.subtotal }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" type="button" (click)="quitarProducto(i)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="4">Total</th>
+        <th colspan="2">${{ nuevaVenta.total }}</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- ==================================================
+    BOTÓN PARA ABRIR MODAL
+    Descripción: Abre el modal para registrar una nueva venta.
+  =================================================== -->
+  <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">
+    <i class="fa fa-plus"></i> Nueva Venta
+  </button>
+
+  <!-- ==================================================
+    MODAL DE NUEVA VENTA
+    Descripción: Modal para registrar una nueva venta
+    incluyendo método de pago, productos y cantidades.
+  =================================================== -->
+  <div class="modal fade" id="modalNuevaVenta" tabindex="-1" aria-labelledby="modalNuevaVentaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg" style="border-radius: 15px; overflow: hidden;">
+
+        <!-- Encabezado del Modal -->
+        <div class="modal-header text-white" style="background: linear-gradient(90deg, #002147, #0056b3); padding: 1.5rem;">
+          <h5 class="modal-title fw-bold" id="modalNuevaVentaLabel">
+            <i class="fa fa-cart-plus me-2"></i> Registrar Nueva Venta
+          </h5>
+          <button type="button" class="btn text-white border-0 p-0 shadow-none"
+                  data-bs-dismiss="modal" aria-label="Cerrar"
+                  style="background: transparent; font-size: 1.5rem; position: absolute; top: 10px; right: 15px;">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Cuerpo del Modal -->
+        <div class="modal-body px-4 py-4">
+          <form (ngSubmit)="registrarVenta()">
+
+            <!-- Método de Pago -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Método de Pago</label>
+              <select class="form-select rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.metodoPago" name="metodoPago" required>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Transferencia">Transferencia</option>
+              </select>
+            </div>
+
+            <!-- Productos y Cantidad -->
+            <div class="row g-3 align-items-end">
+              <div class="col-md-5">
+                <label class="form-label fw-bold">Producto</label>
+                <select class="form-select rounded-pill shadow-sm" [(ngModel)]="productoSeleccionado" name="productoSeleccionado">
+                  <option *ngFor="let p of productos" [ngValue]="p">{{ p.name }} - ${{ p.price }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Cantidad</label>
+                <input type="number" min="1" [(ngModel)]="cantidadSeleccionada" name="cantidadSeleccionada"
+                       class="form-control rounded-pill shadow-sm" placeholder="Cantidad">
+              </div>
+              <div class="col-md-3 d-grid">
+                <button type="button" class="btn btn-primary rounded-pill shadow-sm" (click)="agregarProducto()">
+                  <i class="fa fa-plus"></i> Agregar
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabla de Productos Agregados -->
+            <div class="mt-4" *ngIf="nuevaVenta.detalles.length > 0">
+              <table class="table table-bordered table-sm shadow-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let d of nuevaVenta.detalles; let i = index">
+                    <td>{{ d.producto.name }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td>${{ d.precioUnitario }}</td>
+                    <td>${{ d.subtotal }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-danger rounded-circle" type="button" (click)="quitarProducto(i)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th colspan="3">Total</th>
+                    <th colspan="2">${{ nuevaVenta.total }}</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Botones del Modal -->
+            <div class="mt-4 d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-success rounded-pill"
+                      [disabled]="nuevaVenta.detalles.length === 0">
+                <i class="fa fa-check"></i> Registrar Venta
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

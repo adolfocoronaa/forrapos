@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
     if (isPlatformBrowser(this.platformId)) {
       const email = localStorage.getItem('email'); // Accede a localStorage solo en el navegador
       if (email) {
-        return true;
+        return true; 
       }
     }
     
