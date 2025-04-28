@@ -52,6 +52,9 @@ public class Program
 
                     app.UseRouting();
 
+                    // Habilita archivos estáticos desde wwwroot
+                    app.UseStaticFiles();
+
                     // Mapeo de endpoints de controladores
                     app.UseEndpoints(endpoints =>
                     {

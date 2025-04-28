@@ -24,4 +24,21 @@ export class VentasService {
   getProductos(): Observable<any[]> {
     return this.http.get<any[]>(this.productosUrl);
   }
+
+  // Obtener ventas de acuerdo a los filtros
+  getVentasFiltradas(filtros: any): Observable<any[]> {
+    const params = {
+      estado: filtros.estado || '',
+      year: filtros.year || '',
+      mes: filtros.mes || '',
+      minTotal: filtros.minTotal?.toString() || '',
+      maxTotal: filtros.maxTotal?.toString() || '',
+      producto: filtros.producto || ''
+    };
+    return this.http.get<any[]>('http://localhost:5233/api/ventas/filtradas', { params });
+  }
+
+  actualizarVenta(id: number, venta: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, venta);
+  }
 }

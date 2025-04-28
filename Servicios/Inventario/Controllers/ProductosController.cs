@@ -57,7 +57,7 @@ namespace Inventario.Controllers
                     await imagen.CopyToAsync(stream);
                 }
 
-                producto.ImagenUrl = $"/imagenes/productos/{nombreArchivo}";
+                producto.ImagenUrl = $"{Request.Scheme}://{Request.Host}/imagenes/productos/{nombreArchivo}";
             }
 
             _context.Productos.Add(producto);
@@ -65,5 +65,21 @@ namespace Inventario.Controllers
 
             return Ok(new { mensaje = "Producto creado exitosamente.", producto });
         }
+
+        [HttpPut("actualizar-imagenes")]
+        public async Task<IActionResult> ActualizarImagenesAntiguas() {
+            var productos = await _context.Productos
+                .Where(p => !p.ImagenUrl.StartsWith("http"))
+                .ToListAsync();
+
+            foreach (var producto in productos)
+            {
+                producto.ImagenUrl = $"{Request.Scheme}://{Request.Host}{producto.ImagenUrl}";
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Imagenes actualizadas correctamente.", total = productos.Count });
+        }
+
     }
 }

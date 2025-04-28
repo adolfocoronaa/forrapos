@@ -3,6 +3,9 @@ import { VentasService } from '../../services/ventas.service';
 import { Venta } from './venta.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service';
+
+
 
 @Component({
   selector: 'app-ventas',
@@ -22,6 +25,8 @@ export class VentasComponent implements OnInit {
   paginaActual: number = 1;
   ventasPorPagina: number = 5;
   yearsArray: number[] = [];
+  ventaSeleccionada: Venta | null = null;
+  mostrarModalDetalles: boolean = false;
   meses: string[] = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
@@ -41,7 +46,7 @@ export class VentasComponent implements OnInit {
   filtroMax: number | null = null;
   filtroProducto: string = '';
 
-  constructor(private ventasService: VentasService) {}
+  constructor(private ventasService: VentasService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.cargarVentas();
@@ -53,11 +58,21 @@ export class VentasComponent implements OnInit {
   }
 
   cargarVentas() {
-    this.ventasService.getVentas().subscribe(data => {
+    const params: any = {};
+  
+    if (this.filtroYear) params.year = this.filtroYear;
+    if (this.filtroMes && this.filtroMes !== 'Todo') params.mes = this.meses.indexOf(this.filtroMes) + 1;
+    if (this.filtroEstado) params.estado = this.filtroEstado;
+    if (this.filtroMin != null) params.minTotal = this.filtroMin;
+    if (this.filtroMax != null) params.maxTotal = this.filtroMax;
+    if (this.filtroProducto) params.producto = this.filtroProducto;
+  
+    this.ventasService.getVentasFiltradas(params).subscribe(data => {
       this.ventas = data;
-      this.aplicarFiltros();
+      this.ventasFiltradas = data;
     });
   }
+  
 
   cargarProductos() {
     this.ventasService.getProductos().subscribe(data => {
@@ -66,18 +81,23 @@ export class VentasComponent implements OnInit {
   }
 
   aplicarFiltros() {
-    this.ventasFiltradas = this.ventas.filter(v => {
-      const fecha = new Date(v.fecha);
-      const cumpleEstado = this.filtroEstado ? v.estado === this.filtroEstado : true;
-      const cumpleMes = this.filtroMes ? fecha.getMonth() + 1 === +this.filtroMes : true;
-      const cumpleYear = this.filtroYear ? fecha.getFullYear() === +this.filtroYear : true;
-      const cumplePrecioMin = this.filtroMin != null ? v.total >= this.filtroMin : true;
-      const cumplePrecioMax = this.filtroMax != null ? v.total <= this.filtroMax : true;
-      const cumpleBusqueda = this.busqueda ? JSON.stringify(v).toLowerCase().includes(this.busqueda.toLowerCase()) : true;
-      const cumpleProducto = this.filtroProducto ? v.detalles.some(d => d.producto.toLowerCase().includes(this.filtroProducto.toLowerCase())) : true;
-      return cumpleEstado && cumpleMes && cumpleYear && cumplePrecioMin && cumplePrecioMax && cumpleBusqueda && cumpleProducto;
+    const filtros = {
+      estado: this.filtroEstado,
+      year: this.filtroYear,
+      mes: this.filtroMes === 'Todo' || !this.filtroMes
+        ? ''
+        : this.meses.indexOf(this.filtroMes) + 1, 
+      minTotal: this.filtroMin,
+      maxTotal: this.filtroMax,
+      producto: this.filtroProducto
+    };
+  
+    this.ventasService.getVentasFiltradas(filtros).subscribe(data => {
+      this.ventasFiltradas = data;
+      this.paginaActual = 1;
     });
   }
+  
 
   limpiarFiltros() {
     this.filtroEstado = '';
@@ -120,6 +140,8 @@ export class VentasComponent implements OnInit {
   registrarVenta() {
     const payload = {
       metodoPago: this.nuevaVenta.metodoPago,
+      total: this.nuevaVenta.total,
+      folio: '', // se generará en backend, solo se necesita que esté presente
       detalles: this.nuevaVenta.detalles.map((d: any) => ({
         productoId: d.productoId,
         cantidad: d.cantidad,
@@ -127,12 +149,19 @@ export class VentasComponent implements OnInit {
       }))
     };
 
+      // Validación básica
+    if (!payload.metodoPago || payload.detalles.length === 0) {
+      alert('Debe seleccionar un método de pago y al menos un producto.');
+      return;
+    }
+
     this.ventasService.crearVenta(payload).subscribe(() => {
-      alert('Venta registrada correctamente');
 
       this.nuevaVenta = { metodoPago: '', total: 0, detalles: [] };
     
       this.cargarVentas();
+    }, (error) => {
+      alert('Error: Verifica los datos ingresados.');
     });
   }
 
@@ -150,4 +179,104 @@ export class VentasComponent implements OnInit {
     const total = Math.ceil(this.ventasFiltradas.length / this.ventasPorPagina);
     return Array.from({ length: total }, (_, i) => i + 1);
   }
+
+  // Marcar todos como seleccionados o no
+  toggleSeleccionarTodas(event: any) {
+    const checked = event.target.checked;
+    this.ventasPaginadas.forEach(v => v.seleccionado = checked);
+  }
+
+  // Acciones personalizadas
+  editarVenta(venta: any) {
+    venta.editando = true;
+
+    // Convertir fecha a formato para datetime-local
+    venta.fecha = this.dateFormat(venta.fecha);
+
+    venta.detalles = venta.detalles.map((d: any) => {
+    const productoEncontrado = this.productos.find(p => p.name === d.producto);
+    return {
+      productoId: productoEncontrado ? productoEncontrado.id : null,
+      cantidad: d.cantidad,
+      precioUnitario: d.precioUnitario,
+      subtotal: d.subtotal
+    };
+  });
+  }
+
+  generarReporte(venta: Venta) {
+    console.log("Generando PDF para:", venta);
+  }
+
+  eliminarVenta(venta: Venta) {
+    if (confirm(`¿Eliminar venta ${venta.folio}?`)) {
+      console.log("Eliminando venta:", venta);
+      // Lógica para backend aquí
+    }
+  }
+
+  verDetalles(venta: Venta) {
+    this.ventaSeleccionada = venta;
+    this.mostrarModalDetalles = true;
+  }
+  
+  duplicarVenta(venta: Venta) {
+    this.nuevaVenta = {
+      metodoPago: venta.estado === "Completado" ? venta.metodoPago : '',
+      total: venta.total,
+      detalles: venta.detalles.map(d => ({
+        producto: d.producto,
+        cantidad: d.cantidad,
+        precioUnitario: d.precioUnitario,
+        subtotal: d.subtotal
+      }))
+    };
+    console.log('Venta duplicada lista para registrar');
+  }
+  
+  enviarPorCorreo(venta: Venta) {
+    // Podrías conectar con un servicio de backend que genere PDF y lo envíe
+    alert(`Se enviará la venta ${venta.folio} por correo 📧`);
+  }
+  
+  imprimirVenta(venta: Venta) {
+    // Implementa lógica para generar PDF y abrir en nueva ventana o imprimir
+    alert(`Preparando impresión para ${venta.folio} 🖨️`);
+  }
+  
+  guardarVenta(v: any) {
+    const detallesValidos = v.detalles.map((d: any) => ({
+      productoId: d.productoId,
+      cantidad: d.cantidad,
+      precioUnitario: d.precioUnitario
+    }));
+  
+    const payload = {
+      fecha: v.fecha,
+      metodoPago: v.metodoPago,
+      detalles: detallesValidos
+    };
+  
+    this.ventasService.actualizarVenta(v.id, payload).subscribe(() => {
+      this.toast.showSuccess('Venta actualizada exitosamente');
+      v.editando = false;
+      this.cargarVentas(); // Recarga para ver los nuevos totales
+    }, err => {
+      this.toast.showError('Error al actualizar la venta');
+    });
+  }
+
+  dateFormat(fechaOriginal: any): string {
+    const fecha = new Date(fechaOriginal);
+    const year = fecha.getFullYear();
+    const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const day = fecha.getDate().toString().padStart(2, '0');
+    const hours = fecha.getHours().toString().padStart(2, '0');
+    const minutes = fecha.getMinutes().toString().padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  recalcularTotal(venta: any) {
+    venta.total = venta.detalles.reduce((sum: number, d: any) => sum + (d.cantidad * d.precioUnitario), 0);
+  }  
 }

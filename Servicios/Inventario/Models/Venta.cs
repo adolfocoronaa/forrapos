@@ -28,6 +28,16 @@ namespace Inventario.Models
         public decimal Total { get; set; }
 
         /// <summary>
+        /// Metodo de pago de la venta.
+        /// </summary>
+        public string MetodoPago { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Folio o número de referencia de la venta
+        /// </summary>
+        public string Folio { get; set; } = string.Empty;
+
+        /// <summary>
         /// Lista de detalles de productos vendidos en esta venta.
         /// </summary>
         public ICollection<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();
