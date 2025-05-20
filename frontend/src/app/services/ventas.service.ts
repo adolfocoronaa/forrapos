@@ -41,4 +41,8 @@ export class VentasService {
   actualizarVenta(id: number, venta: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, venta);
   }
+
+  eliminarVenta(id: number) {
+    return this.http.delete(`http://localhost:5233/api/ventas/${id}`);
+  }
 }

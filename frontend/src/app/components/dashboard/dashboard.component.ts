@@ -17,11 +17,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardService } from '../../services/dashboard.service';
 import { DashboardStats } from './dashboard-stats.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard', // Selector que se utiliza para insertar el componente en HTML
   standalone: true,          // Este componente es standalone (no necesita declararse en un módulo)
-  imports: [CommonModule, ReactiveFormsModule, FormsModule], // Módulos necesarios para la plantilla
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule], // Módulos necesarios para la plantilla
   templateUrl: './dashboard.component.html', // Ruta a la plantilla HTML del dashboard
   styleUrls: ['./dashboard.component.css']   // Archivo de estilos específico del componente
 })
@@ -32,6 +33,7 @@ export class DashboardComponent {
    * Esta propiedad controla la visibilidad de elementos exclusivos del rol administrador.
    */
   isAdmin: boolean = false;
+  userName: string = '';
   stats: DashboardStats | null = null;
 
   /**
@@ -43,11 +45,13 @@ export class DashboardComponent {
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    const userRole = localStorage.getItem('rol');
-    this.isAdmin = userRole === 'Administrador';
-
-    this.dashboardService.getEstadisticas().subscribe(data => {
-      this.stats = data;
-    });
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userRole = localStorage.getItem('rol');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+      this.isAdmin = userRole === 'Administrador';
+  
+      this.userName = user.name || 'Usuario';
+    }
   }
 }

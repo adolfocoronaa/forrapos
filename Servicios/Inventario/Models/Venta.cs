@@ -38,6 +38,33 @@ namespace Inventario.Models
         public string Folio { get; set; } = string.Empty;
 
         /// <summary>
+        /// Nombre del cliente
+        /// </summary>
+        public string? Cliente { get; set; }
+        /// <summary>
+        /// RFC del cliente
+        /// </summary>
+        public string? RFC { get; set; }
+        /// <summary>
+        /// Razon socila del cliente
+        /// </summary>
+        public string? RazonSocial { get; set; }
+        /// <summary>
+        /// Dirección fiscal del cliente
+        /// </summary>
+        public string? DireccionFiscal { get; set; }
+
+        /// <summary>
+        /// Dirección fiscal del cliente
+        /// </summary>
+        public string? CorreoFactura { get; set; }
+
+        /// <summary>
+        /// Dirección fiscal del cliente
+        /// </summary>
+        public string? UsoCFDI { get; set; }
+
+        /// <summary>
         /// Lista de detalles de productos vendidos en esta venta.
         /// </summary>
         public ICollection<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();

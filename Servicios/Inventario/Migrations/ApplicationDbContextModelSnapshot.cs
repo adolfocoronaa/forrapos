@@ -33,6 +33,9 @@ namespace Inventario.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Folio")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("ProveedorId")
                         .HasColumnType("int");
 
@@ -209,6 +212,15 @@ namespace Inventario.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Cliente")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CorreoFactura")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DireccionFiscal")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime(6)");
 
@@ -220,8 +232,17 @@ namespace Inventario.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("RFC")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RazonSocial")
+                        .HasColumnType("longtext");
+
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("UsoCFDI")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

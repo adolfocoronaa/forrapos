@@ -4,6 +4,8 @@ import { Venta } from './venta.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../services/toast.service';
+import { PdfService } from '../../services/pdf.service';
+
 
 
 
@@ -27,6 +29,32 @@ export class VentasComponent implements OnInit {
   yearsArray: number[] = [];
   ventaSeleccionada: Venta | null = null;
   mostrarModalDetalles: boolean = false;
+  
+  usoCfdiLabels: { [clave: string]: string } = {
+    G01: 'G01 - Adquisición de mercancías',
+    G02: 'G02 - Devoluciones, descuentos o bonificaciones',
+    G03: 'G03 - Gastos en general',
+    I01: 'I01 - Construcciones',
+    I02: 'I02 - Mobiliario y equipo de oficina por inversiones',
+    I03: 'I03 - Equipo de transporte',
+    I04: 'I04 - Equipo de cómputo y accesorios',
+    I05: 'I05 - Dados, troqueles, moldes, matrices y herramental',
+    I06: 'I06 - Comunicaciones telefónicas',
+    I07: 'I07 - Comunicaciones satelitales',
+    I08: 'I08 - Otra maquinaria y equipo',
+    D01: 'D01 - Honorarios médicos, dentales y gastos hospitalarios',
+    D02: 'D02 - Gastos médicos por incapacidad o discapacidad',
+    D03: 'D03 - Gastos funerales',
+    D04: 'D04 - Donativos',
+    D05: 'D05 - Intereses reales pagados por créditos hipotecarios',
+    D06: 'D06 - Aportaciones voluntarias al SAR',
+    D07: 'D07 - Primas por seguros de gastos médicos',
+    D08: 'D08 - Gastos de transportación escolar obligatoria',
+    D09: 'D09 - Ahorro o pensiones',
+    D10: 'D10 - Servicios educativos (colegiaturas)',
+    P01: 'P01 - Por definir'
+  };
+  
   meses: string[] = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
@@ -35,7 +63,13 @@ export class VentasComponent implements OnInit {
   nuevaVenta: any = {
     metodoPago: '',
     total: 0,
-    detalles: []
+    detalles: [],
+    cliente: '',
+    rfc: '',
+    razonSocial: '',
+    direccionFiscal: '',
+    correoFactura: '',
+    usoCfdi: ''
   };
 
   // Filtros
@@ -46,7 +80,7 @@ export class VentasComponent implements OnInit {
   filtroMax: number | null = null;
   filtroProducto: string = '';
 
-  constructor(private ventasService: VentasService, private toast: ToastService) {}
+  constructor(private ventasService: VentasService, private toast: ToastService, private pdfService: PdfService) {}
 
   ngOnInit(): void {
     this.cargarVentas();
@@ -142,6 +176,12 @@ export class VentasComponent implements OnInit {
       metodoPago: this.nuevaVenta.metodoPago,
       total: this.nuevaVenta.total,
       folio: '', // se generará en backend, solo se necesita que esté presente
+      cliente: this.nuevaVenta.cliente || null,
+      rfc: this.nuevaVenta.rfc || null,
+      razonSocial: this.nuevaVenta.razonSocial || null,
+      direccionFiscal: this.nuevaVenta.direccionFiscal || null,
+      correoFactura: this.nuevaVenta.correoFactura,
+      usoCfdi: this.nuevaVenta.usoCfdi,
       detalles: this.nuevaVenta.detalles.map((d: any) => ({
         productoId: d.productoId,
         cantidad: d.cantidad,
@@ -156,8 +196,17 @@ export class VentasComponent implements OnInit {
     }
 
     this.ventasService.crearVenta(payload).subscribe(() => {
-
-      this.nuevaVenta = { metodoPago: '', total: 0, detalles: [] };
+      this.nuevaVenta = { 
+        metodoPago: '', 
+        total: 0, 
+        detalles: [],
+        cliente: '',
+        rfc: '',
+        razonSocial: '',
+        direccionFiscal: '',
+        correoFactura: '',
+        usoCfdi: '',
+      };
     
       this.cargarVentas();
     }, (error) => {
@@ -205,13 +254,19 @@ export class VentasComponent implements OnInit {
   }
 
   generarReporte(venta: Venta) {
-    console.log("Generando PDF para:", venta);
+    const doc = this.pdfService.generarPdf(venta);
+    doc.save(`venta_${venta.folio}.pdf`);
   }
+
 
   eliminarVenta(venta: Venta) {
     if (confirm(`¿Eliminar venta ${venta.folio}?`)) {
-      console.log("Eliminando venta:", venta);
-      // Lógica para backend aquí
+      this.ventasService.eliminarVenta(venta.id).subscribe(() => {
+        this.toast.showSuccess('Venta eliminada exitosamente');
+        this.cargarVentas();
+      }, err => {
+        this.toast.showError('Error al eliminar la venta');
+      });
     }
   }
 
@@ -221,27 +276,49 @@ export class VentasComponent implements OnInit {
   }
   
   duplicarVenta(venta: Venta) {
-    this.nuevaVenta = {
+    const payload = {
       metodoPago: venta.estado === "Completado" ? venta.metodoPago : '',
-      total: venta.total,
+      cliente: venta.cliente,
+      rfc: venta.rfc,
+      razonSocial: venta.razonSocial,
+      direccionFiscal: venta.direccionFiscal,
+      correoFactura: venta.correoFactura,
+      usoCfdi: venta.usoCfdi,
       detalles: venta.detalles.map(d => ({
-        producto: d.producto,
+        productoId: this.obtenerProductoIdPorNombre(d.producto),
         cantidad: d.cantidad,
-        precioUnitario: d.precioUnitario,
-        subtotal: d.subtotal
+        precioUnitario: d.precioUnitario
       }))
     };
-    console.log('Venta duplicada lista para registrar');
+  
+    this.ventasService.crearVenta(payload).subscribe(() => {
+      // Se despliega el mensaje que se pudo duplicar la venta exitosamente
+      this.toast.showSuccess('Venta duplicada correctamente');
+      this.cargarVentas(); // Recarga para ver la nueva venta al final
+    }, err => {
+      this.toast.showError('Error al duplicar la venta');
+    });
   }
   
+  
   enviarPorCorreo(venta: Venta) {
-    // Podrías conectar con un servicio de backend que genere PDF y lo envíe
-    alert(`Se enviará la venta ${venta.folio} por correo 📧`);
+    // Abrir cliente de correo con datos prellenados
+    const correo = encodeURIComponent(venta.correoFactura || '');
+    const asunto = encodeURIComponent(`Factura de venta ${venta.folio}`);
+    const cuerpo = encodeURIComponent(`Hola,\n\nAdjunto la factura correspondiente a la venta ${venta.folio}.\n\nPor favor revisa el archivo PDF descargado.\n\nSaludos.`);
+    window.location.href = `mailto:${correo}?subject=${asunto}&body=${cuerpo}`;
   }
   
   imprimirVenta(venta: Venta) {
-    // Implementa lógica para generar PDF y abrir en nueva ventana o imprimir
-    alert(`Preparando impresión para ${venta.folio} 🖨️`);
+    const doc = this.pdfService.generarPdf(venta);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    const printWindow = window.open(url);
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
   }
   
   guardarVenta(v: any) {
@@ -279,4 +356,10 @@ export class VentasComponent implements OnInit {
   recalcularTotal(venta: any) {
     venta.total = venta.detalles.reduce((sum: number, d: any) => sum + (d.cantidad * d.precioUnitario), 0);
   }  
+
+  // Function to get a product by Name
+  obtenerProductoIdPorNombre(nombre: string): number {
+    const encontrado = this.productos.find(p => p.name === nombre);
+    return encontrado ? encontrado.id : 0; // o lanza error si no se encuentra
+  }
 }

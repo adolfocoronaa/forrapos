@@ -29,9 +29,14 @@ namespace Inventario.Models
         public int ProveedorId { get; set; }
 
         /// <summary>
+        /// Folio de la compra
+        /// </summary>
+        public string? Folio { get; set; }
+
+        /// <summary>
         /// Objeto proveedor relacionado con esta compra.
         /// </summary>
-        public Proveedor Proveedor { get; set; }
+        public Proveedor? Proveedor { get; set; }
 
         /// <summary>
         /// Total monetario de la compra.

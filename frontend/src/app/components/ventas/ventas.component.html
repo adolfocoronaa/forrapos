@@ -51,6 +51,39 @@
     </div>
   </div>
 
+  <!-- Fila para selector y paginación a la derecha -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div></div> <!-- Espaciador vacío a la izquierda -->
+
+    <div class="d-flex align-items-center gap-3">
+      <!-- Selector de filas -->
+      <label class="form-label mb-0">Filas por página:</label>
+      <select class="form-select form-select-sm w-auto" [(ngModel)]="ventasPorPagina" (change)="paginaActual = 1">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+        <option [value]="50">50</option>
+        <option [value]="ventasFiltradas.length">Todas</option>
+      </select>
+
+      <!-- Controles de paginación -->
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="paginaActual === 1">
+            <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+          </li>
+          <li class="page-item" *ngFor="let pagina of totalPaginas()" [class.active]="pagina === paginaActual">
+            <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="paginaActual === totalPaginas().length">
+            <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+
   <!-- ==================================================
     TABLA DE VENTAS
     Descripción: Tabla con las ventas filtradas y sus detalles.
@@ -69,10 +102,10 @@
     <tbody>
       <tr *ngFor="let d of nuevaVenta.detalles; let i = index">
         <td>
-          <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto.name }}"
+          <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto }}"
                class="img-thumbnail" width="50">
         </td>
-        <td>{{ d.producto.name }}</td>
+        <td>{{ d.producto }}</td>
         <td>{{ d.cantidad }}</td>
         <td>${{ d.precioUnitario }}</td>
         <td>${{ d.subtotal }}</td>
@@ -246,6 +279,46 @@
         <div class="modal-body px-4 py-4">
           <form (ngSubmit)="registrarVenta()">
 
+            <!-- Sección de Datos Fiscales (Opcional) -->
+          <div class="accordion mb-3" id="accordionDatosFiscales">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingDatosFiscales">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosFiscales" aria-expanded="false" aria-controls="collapseDatosFiscales">
+                  ¿Desea capturar datos fiscales?
+                </button>
+              </h2>
+              <div id="collapseDatosFiscales" class="accordion-collapse collapse" aria-labelledby="headingDatosFiscales">
+                <div class="accordion-body">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Nombre del Cliente</label>
+                    <input type="text" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.cliente" name="cliente">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">RFC</label>
+                    <input type="text" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.rfc" name="rfc">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Razón Social</label>
+                    <input type="text" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.razonSocial" name="razonSocial">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Dirección Fiscal</label>
+                    <textarea class="form-control rounded shadow-sm" [(ngModel)]="nuevaVenta.direccionFiscal" name="direccionFiscal" rows="3"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Correo de facturación</label>
+                    <input type="email" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.correoFactura" name="correoFactura">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Uso de CFDI</label>
+                    <input type="email" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaVenta.usoCfdi" name="usoCfdi">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
             <!-- Método de Pago -->
             <div class="mb-3">
               <label class="form-label fw-bold">Método de Pago</label>
@@ -368,6 +441,23 @@
               </tr>
             </tbody>
           </table>
+
+          <hr>
+
+          <h6 class="mt-4 border-bottom pb-2">Datos fiscales:</h6>
+          <div *ngIf="ventaSeleccionada?.cliente; else noDatosFiscales">
+            <p><strong>Nombre o razón social:</strong> {{ ventaSeleccionada?.cliente }}</p>
+            <p><strong>RFC:</strong> {{ ventaSeleccionada?.rfc }}</p>
+            <p><strong>Dirección fiscal:</strong> {{ ventaSeleccionada?.direccionFiscal }}</p>
+            <p><strong>Correo electrónico:</strong> {{ ventaSeleccionada?.correoFactura }}</p>
+            <p><strong>Uso de CFDI:</strong>
+              {{ usoCfdiLabels[ventaSeleccionada?.usoCfdi || ''] || 'No especificado' }}
+            </p>
+          </div>
+
+          <ng-template #noDatosFiscales>
+            <p class="text-muted fst-italic">No se capturaron datos fiscales para esta venta.</p>
+          </ng-template>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="mostrarModalDetalles = false">Cerrar</button>

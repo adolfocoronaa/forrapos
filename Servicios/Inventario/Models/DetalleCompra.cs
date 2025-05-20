@@ -24,6 +24,7 @@ namespace Inventario.Models
         /// <summary>
         /// Objeto de navegación hacia la entidad Compra.
         /// </summary>
+         [ForeignKey("CompraId")]
         public Compra Compra { get; set; }
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace Inventario.Models
         /// <summary>
         /// Objeto de navegación hacia el producto.
         /// </summary>
+        [ForeignKey("ProductoId")]
         public Producto Producto { get; set; }
 
         /// <summary>
