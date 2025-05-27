@@ -1,63 +1,65 @@
-using Inventario.Data;
 using Microsoft.EntityFrameworkCore;
+using Inventario.Data;
 
-var builder = WebApplication.CreateBuilder(args);
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-builder.Services.AddControllers();
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200") 
-                  .AllowAnyMethod();
-        });
-});
+    /// <summary>
+    /// Punto de entrada principal de la aplicación.
+    /// </summary>
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
-var app = builder.Build();
+    /// <summary>
+    /// Configura y construye el host de la aplicación.
+    /// Define servicios, middleware y el contexto de base de datos.
+    /// </summary>
+    /// <param name="args">Argumentos de la línea de comandos</param>
+    /// <returns>IHostBuilder configurado</returns>
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.ConfigureServices(services =>
+                {
+                    // Configuración del contexto de base de datos con MySQL
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseMySql(
+                            "server=localhost;database=forrapos;user=root;password=root",
+                            ServerVersion.AutoDetect("server=localhost;database=forrapos;user=root;password=root"))
+                    );
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+                    // Registro de los controladores para la API
+                    services.AddControllers();
 
-app.UseHttpsRedirection();
-app.UseCors("AllowAngular");
-app.UseAuthorization();
-app.MapControllers();
+                    // Configuración de política CORS para permitir frontend en Angular (localhost:4200)
+                    services.AddCors(options =>
+                    {
+                        options.AddPolicy("AllowLocalhost", builder =>
+                        {
+                            builder.WithOrigins("http://localhost:4200")
+                                   .AllowAnyMethod()
+                                   .AllowAnyHeader();
+                        });
+                    });
+                });
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+                webBuilder.Configure(app =>
+                {
+                    // Activar la política CORS definida anteriormente
+                    app.UseCors("AllowLocalhost");
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+                    app.UseRouting();
 
-app.Run();
+                    // Habilita archivos estáticos desde wwwroot
+                    app.UseStaticFiles();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+                    // Mapeo de endpoints de controladores
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapControllers();
+                    });
+                });
+            });
 }
