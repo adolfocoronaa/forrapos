@@ -260,7 +260,7 @@
     incluyendo método de pago, productos y cantidades.
   =================================================== -->
   <div class="modal fade" id="modalNuevaVenta" tabindex="-1" aria-labelledby="modalNuevaVentaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content shadow-lg" style="border-radius: 15px; overflow: hidden;">
 
         <!-- Encabezado del Modal -->
@@ -277,17 +277,20 @@
 
         <!-- Cuerpo del Modal -->
         <div class="modal-body px-4 py-4">
-          <form (ngSubmit)="registrarVenta()">
-
-            <!-- Sección de Datos Fiscales (Opcional) -->
-          <div class="accordion mb-3" id="accordionDatosFiscales">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingDatosFiscales">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosFiscales" aria-expanded="false" aria-controls="collapseDatosFiscales">
-                  ¿Desea capturar datos fiscales?
-                </button>
-              </h2>
-              <div id="collapseDatosFiscales" class="accordion-collapse collapse" aria-labelledby="headingDatosFiscales">
+      <form (ngSubmit)="registrarVenta()">
+        <div class="row">
+          <!-- Primera sección: Datos Fiscales -->
+          <div class="col-md-6">
+            <div class="accordion mb-3" id="accordionDatosFiscales">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingDatosFiscales">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosFiscales" aria-expanded="false" aria-controls="collapseDatosFiscales">
+                    ¿Desea capturar datos fiscales?
+                  </button>
+                </h2>
+                <div id="collapseDatosFiscales" class="accordion-collapse collapse" aria-labelledby="headingDatosFiscales">
+                  <div class="accordion-body">
+                    <div id="collapseDatosFiscales" class="accordion-collapse collapse" aria-labelledby="headingDatosFiscales">
                 <div class="accordion-body">
                   <div class="mb-3">
                     <label class="form-label fw-bold">Nombre del Cliente</label>
@@ -315,10 +318,14 @@
                   </div>
                 </div>
               </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-
+          <!-- Segunda sección: Método de Pago y Productos -->
+          <div class="col-md-6">
             <!-- Método de Pago -->
             <div class="mb-3">
               <label class="form-label fw-bold">Método de Pago</label>
@@ -339,8 +346,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold">Cantidad</label>
-                <input type="number" min="1" [(ngModel)]="cantidadSeleccionada" name="cantidadSeleccionada"
-                       class="form-control rounded-pill shadow-sm" placeholder="Cantidad">
+                <input type="number" min="1" [(ngModel)]="cantidadSeleccionada" name="cantidadSeleccionada" class="form-control rounded-pill shadow-sm" placeholder="Cantidad">
               </div>
               <div class="col-md-3 d-grid">
                 <button type="button" class="btn btn-primary rounded-pill shadow-sm" (click)="agregarProducto()">
@@ -348,6 +354,8 @@
                 </button>
               </div>
             </div>
+          </div>
+        </div>
 
             <!-- Tabla de Productos Agregados -->
             <div class="mt-4" *ngIf="nuevaVenta.detalles.length > 0">
