@@ -7,6 +7,8 @@ import { VentasComponent } from './components/ventas/ventas.component';
 import { ComprasComponent } from './components/compras/compras.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LayoutComponent } from './components/layout/layout.component';
+import { MovimientoInventarioComponent } from './components/movimiento-inventario/movimiento-inventario.component';
+import { EstadisticasComponent } from './components/statistics/statistics.component';
 
 export const routes: Routes = [
   // 👇 Si no se escribe nada, redirige al login
@@ -25,7 +27,9 @@ export const routes: Routes = [
       { path: 'venta', component: VentasComponent },
       { path: 'compra', component: ComprasComponent},
       { path: 'productos', component: ProductosComponent },
-      { path: 'admin', component: AdminComponent }
+      { path: 'admin', component: AdminComponent },
+      { path: 'inventario', component: MovimientoInventarioComponent },
+      { path: 'estadisticas', component: EstadisticasComponent }
     ]
   },
 

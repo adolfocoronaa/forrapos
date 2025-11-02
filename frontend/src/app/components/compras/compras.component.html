@@ -250,12 +250,12 @@
   
 
   <!-- ==================================================
-    MODAL DE NUEVA VENTA
-    Descripción: Modal para registrar una nueva venta
-    incluyendo método de pago, productos y cantidades.
+      MODAL DE NUEVA COMPRA
+      Descripción: Modal para registrar una nueva compra
+      incluyendo método de pago, productos y cantidades.
   =================================================== -->
   <div class="modal fade" id="modalNuevaCompra" tabindex="-1" aria-labelledby="modalNuevaCompraLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content shadow-lg" style="border-radius: 15px; overflow: hidden;">
 
         <!-- Encabezado del Modal -->
@@ -273,33 +273,76 @@
         <!-- Cuerpo del Modal -->
         <div class="modal-body px-4 py-4">
           <form (ngSubmit)="registrarCompra()">
-            <!-- Método de Pago -->
-            <div class="mb-3">
-              <label class="form-label fw-bold">Método de Pago</label>
-              <select class="form-select rounded-pill shadow-sm" [(ngModel)]="nuevaCompra.metodoPago" name="metodoPago" required>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Transferencia">Transferencia</option>
-              </select>
-            </div>
+            <div class="row">
+              <!-- Sección: Datos del Proveedor -->
+              <div class="col-md-6">
+                <div class="accordion mb-3" id="accordionProveedor">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingProveedor">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProveedor" aria-expanded="false" aria-controls="collapseProveedor">
+                        Datos del Proveedor
+                      </button>
+                    </h2>
+                    <div id="collapseProveedor" class="accordion-collapse collapse" aria-labelledby="headingProveedor">
+                      <div class="accordion-body">
+                        <div class="mb-3">
+                          <label class="form-label fw-bold">Proveedor</label>
+                          <select id="proveedor" 
+                                  class="form-select"
+                                  [(ngModel)]="proveedorSeleccionado" 
+                                  name="proveedorSeleccionado"
+                          >
+                            <option [ngValue]="null">-- Selecciona un proveedor --</option>
+                            <option *ngFor="let proveedor of proveedores" [ngValue]="proveedor.id">
+                              {{ proveedor.name }}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label fw-bold">RFC</label>
+                          <input type="text" class="form-control rounded-pill shadow-sm" [(ngModel)]="nuevaCompra.rfc" name="rfc">
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label fw-bold">Dirección</label>
+                          <textarea class="form-control rounded shadow-sm" [(ngModel)]="nuevaCompra.direccion" name="direccion" rows="2"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Productos y Cantidad -->
-            <div class="row g-3 align-items-end">
-              <div class="col-md-5">
-                <label class="form-label fw-bold">Producto</label>
-                <select class="form-select rounded-pill shadow-sm" [(ngModel)]="productoSeleccionado" name="productoSeleccionado">
-                  <option *ngFor="let p of productos" [ngValue]="p">{{ p.name }} - ${{ p.price }}</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label fw-bold">Cantidad</label>
-                <input type="number" min="1" [(ngModel)]="cantidadSeleccionada" name="cantidadSeleccionada"
-                       class="form-control rounded-pill shadow-sm" placeholder="Cantidad">
-              </div>
-              <div class="col-md-3 d-grid">
-                <button type="button" class="btn btn-primary rounded-pill shadow-sm" (click)="agregarProducto()">
-                  <i class="fa fa-plus"></i> Agregar
-                </button>
+              <!-- Sección: Método de Pago y Productos -->
+              <div class="col-md-6">
+                <!-- Método de Pago -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Método de Pago</label>
+                  <select class="form-select rounded-pill shadow-sm" [(ngModel)]="nuevaCompra.metodoPago" name="metodoPago" required>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Transferencia">Transferencia</option>
+                  </select>
+                </div>
+
+                <!-- Productos y Cantidad -->
+                <div class="row g-3 align-items-end">
+                  <div class="col-md-5">
+                    <label class="form-label fw-bold">Producto</label>
+                    <select class="form-select rounded-pill shadow-sm" [(ngModel)]="productoSeleccionado" name="productoSeleccionado">
+                      <option *ngFor="let p of productos" [ngValue]="p">{{ p.name }} - ${{ p.price }}</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold">Cantidad</label>
+                    <input type="number" min="1" [(ngModel)]="cantidadSeleccionada" name="cantidadSeleccionada"
+                          class="form-control rounded-pill shadow-sm" placeholder="Cantidad">
+                  </div>
+                  <div class="col-md-3 d-grid">
+                    <button type="button" class="btn btn-primary rounded-pill shadow-sm" (click)="agregarProducto()">
+                      <i class="fa fa-plus"></i> Agregar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -352,6 +395,8 @@
       </div>
     </div>
   </div>
+
+
 
    <!-- ==================================================
     MODAL DE LOS DETALLES DE UNA VENTA

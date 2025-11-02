@@ -24,25 +24,30 @@ namespace Inventario.Migrations
 
             modelBuilder.Entity("Inventario.Models.Compra", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdCompra")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_compra");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdCompra"));
 
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("fecha_movimiento");
 
                     b.Property<string>("Folio")
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("Folio");
 
                     b.Property<int>("ProveedorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_proveedor");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("total");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdCompra");
 
                     b.HasIndex("ProveedorId");
 
@@ -53,31 +58,38 @@ namespace Inventario.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_detalle_compra");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompraId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("cantidad");
 
                     b.Property<decimal>("IVA")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("iva");
+
+                    b.Property<int>("IdCompra")
+                        .HasColumnType("int")
+                        .HasColumnName("id_compra");
 
                     b.Property<decimal>("PrecioUnitario")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("precio_unitario");
 
                     b.Property<int>("ProductoId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_producto");
 
                     b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("subtotal");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompraId");
+                    b.HasIndex("IdCompra");
 
                     b.HasIndex("ProductoId");
 
@@ -146,29 +158,46 @@ namespace Inventario.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_proveedor");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Contacto")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("contacto");
 
                     b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("direccion");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("nombre");
+
+                    b.Property<string>("RazonSocial")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("razon_social");
+
+                    b.Property<string>("Rfc")
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)")
+                        .HasColumnName("rfc");
 
                     b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("telefono");
 
                     b.HasKey("Id");
 
@@ -186,6 +215,9 @@ namespace Inventario.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -219,6 +251,10 @@ namespace Inventario.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("DireccionFiscal")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("Fecha")
@@ -264,7 +300,7 @@ namespace Inventario.Migrations
                 {
                     b.HasOne("Inventario.Models.Compra", "Compra")
                         .WithMany("Detalles")
-                        .HasForeignKey("CompraId")
+                        .HasForeignKey("IdCompra")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

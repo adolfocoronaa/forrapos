@@ -15,32 +15,38 @@ namespace Inventario.Models
         /// Identificador único de la compra (clave primaria).
         /// </summary>
         [Key]
-        public int Id { get; set; }
+        [Column("id_compra")]  // 
+        public int IdCompra { get; set; }
 
         /// <summary>
         /// Fecha en la que se realizó la compra.
         /// </summary>
         [Required]
+        [Column("fecha_movimiento")]  // 
         public DateTime Fecha { get; set; }
 
         /// <summary>
         /// Identificador del proveedor relacionado con la compra (clave foránea).
         /// </summary>
+        [Column("id_proveedor")]
         public int ProveedorId { get; set; }
 
         /// <summary>
         /// Folio de la compra
         /// </summary>
+        [Column("Folio")]
         public string? Folio { get; set; }
 
         /// <summary>
         /// Objeto proveedor relacionado con esta compra.
         /// </summary>
+        [ForeignKey("ProveedorId")]
         public Proveedor? Proveedor { get; set; }
 
         /// <summary>
         /// Total monetario de la compra.
         /// </summary>
+        [Column("total")]
         public decimal Total { get; set; }
 
         /// <summary>

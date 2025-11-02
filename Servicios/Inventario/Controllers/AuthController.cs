@@ -66,6 +66,9 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Correo o contraseña incorrectos" });
         }
 
+        usuario.IsActive = true;
+        await _context.SaveChangesAsync();
+
         return Ok(new
         {
             message = "Inicio de sesión exitoso",
@@ -74,7 +77,8 @@ public class AuthController : ControllerBase
                 usuario.Id,
                 usuario.Name,
                 usuario.Email,
-                usuario.Rol
+                usuario.Rol,
+                usuario.IsActive
             }
         });
     }
