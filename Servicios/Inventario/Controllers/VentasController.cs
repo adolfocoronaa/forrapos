@@ -72,6 +72,8 @@ public class VentasController : ControllerBase
 
         nuevaVenta.Total = nuevaVenta.Detalles.Sum(d => d.Subtotal);
 
+        nuevaVenta.Estado = (nuevaVenta.Total > 0) ? "Completado" : "Pendiente";
+
         // Obtener el último ID para generar el folio
         var ultimoId = await _context.Ventas.MaxAsync(v => (int?)v.Id) ?? 0;
         nuevaVenta.Folio = $"FORRA-{(ultimoId + 1).ToString("D4")}";

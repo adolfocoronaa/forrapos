@@ -238,22 +238,31 @@ export class ComprasComponent implements OnInit {
   }
 
   duplicarCompra(compra: Compra) {
+    const proveedorId = Number(
+      (compra.proveedorId as any) ??
+      (typeof (compra as any).proveedor === 'object' ? (compra as any).proveedor?.id : undefined)
+    );
+
+    if (!proveedorId || proveedorId <= 0) {
+      this.toast.showError('No se pudo determinar el proveedor de la compra a duplicar');
+      return;
+    }
+
     const payload = {
-      metodoPago: compra.estado === "Completado" ? compra.metodoPago : '',
+      proveedorId,
+      fecha: new Date().toISOString(), // opcional, si quieres “ahora”
       detalles: compra.detalles.map(d => ({
-        productoId: this.obtenerProductoIdPorNombre(d.producto),
-        cantidad: d.cantidad,
-        precioUnitario: d.precioUnitario
+        productoId: Number(d.productoId || this.obtenerProductoIdPorNombre(d.producto)),
+        cantidad: Number(d.cantidad),
+        precioUnitario: Number(d.precioUnitario),
+        iva: Number(d.iva ?? 0)
       }))
     };
-  
+
     this.comprasService.crearCompra(payload).subscribe(() => {
-      // Se despliega el mensaje que se pudo duplicar la venta exitosamente
-      this.toast.showSuccess('Venta duplicada correctamente');
-      this.cargarCompras(); // Recarga para ver la nueva venta al final
-    }, err => {
-      this.toast.showError('Error al duplicar la venta');
-    });
+      this.toast.showSuccess('Compra duplicada correctamente');
+      this.cargarCompras();
+    }, () => this.toast.showError('Error al duplicar la compra'));
   }
 
   // Function to get a product by Name

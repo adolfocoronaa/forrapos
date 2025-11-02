@@ -105,7 +105,7 @@
           <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto }}"
                class="img-thumbnail" width="50">
         </td>
-        <td>{{ d.producto }}</td>
+        <td>{{ d.producto.name }}</td>
         <td>{{ d.cantidad }}</td>
         <td>${{ d.precioUnitario }}</td>
         <td>${{ d.subtotal }}</td>
@@ -171,6 +171,11 @@
         <td>${{ v.total }}</td>
         <!-- Productos -->
         <td>
+          <div *ngIf="!v.editando">
+            <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
+              <div class="col-4">{{ d.producto }}</div>
+            </div>
+          </div>
           <div *ngIf="v.editando">
             <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
               <!-- Selector de producto -->

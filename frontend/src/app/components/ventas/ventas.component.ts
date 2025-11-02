@@ -243,14 +243,14 @@ export class VentasComponent implements OnInit {
     venta.fecha = this.dateFormat(venta.fecha);
 
     venta.detalles = venta.detalles.map((d: any) => {
-    const productoEncontrado = this.productos.find(p => p.name === d.producto);
-    return {
-      productoId: productoEncontrado ? productoEncontrado.id : null,
-      cantidad: d.cantidad,
-      precioUnitario: d.precioUnitario,
-      subtotal: d.subtotal
-    };
-  });
+      const productoEncontrado = this.productos.find(p => p.name === d.producto);
+      return {
+        productoId: productoEncontrado ? productoEncontrado.id : null,
+        cantidad: d.cantidad,
+        precioUnitario: d.precioUnitario,
+        subtotal: d.subtotal
+      };
+    });
   }
 
   generarReporte(venta: Venta) {

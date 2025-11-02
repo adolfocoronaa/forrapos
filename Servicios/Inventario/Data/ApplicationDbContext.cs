@@ -50,6 +50,11 @@ namespace Inventario.Data
         public DbSet<Proveedor> Proveedores { get; set; }
 
         /// <summary>
+        /// Representa la tabla de movimientos de inventario.
+        /// </summary>
+        public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
+
+        /// <summary>
         /// Configuración de los modelos y nombres de las tablas
         /// </summary>
         /// <param name="modelBuilder">Builder de modelos de Entity Framework.</param>
@@ -63,6 +68,7 @@ namespace Inventario.Data
             modelBuilder.Entity<Compra>().ToTable("compra");
             modelBuilder.Entity<DetalleCompra>().ToTable("detallecompra");
             modelBuilder.Entity<Proveedor>().ToTable("proveedor");
+            modelBuilder.Entity<MovimientoInventario>().ToTable("movimientosinventario");
 
             base.OnModelCreating(modelBuilder);
         }

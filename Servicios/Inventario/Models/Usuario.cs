@@ -35,5 +35,6 @@ namespace Inventario.Models
         /// Rol asignado al usuario (por ejemplo: Empleado, Administrador).
         /// </summary>
         public string Rol { get; set; } = "Empleado";
+        public bool IsActive { get; internal set; }
     }
 }

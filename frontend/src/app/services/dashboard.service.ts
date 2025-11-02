@@ -7,7 +7,7 @@ import { DashboardStats } from '../components/dashboard/dashboard-stats.model';
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'https://localhost:5001/api/dashboard/estadisticas';
+  private apiUrl = 'http://localhost:5233/api/dashboard/estadisticas';
 
   constructor(private http: HttpClient) {}
 

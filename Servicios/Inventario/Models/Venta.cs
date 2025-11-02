@@ -64,6 +64,8 @@ namespace Inventario.Models
         /// </summary>
         public string? UsoCFDI { get; set; }
 
+        public string Estado { get; set; } = "Pendiente";
+
         /// <summary>
         /// Lista de detalles de productos vendidos en esta venta.
         /// </summary>
