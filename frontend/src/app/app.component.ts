@@ -14,6 +14,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { SettingsService } from './services/settings.service';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root', // Selector raíz utilizado en index.html
@@ -28,9 +30,15 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   `,
   styleUrls: ['./app.component.css'] // Estilos globales del componente
 })
-export class AppComponent {
+export class AppComponent  implements OnInit {
+  constructor(private settingsService: SettingsService) {}
   /**
    * Título de la aplicación, puede usarse para propósitos internos o de UI
    */
   title = 'frontend';
+
+  ngOnInit() {
+    // Inicialización del componente
+    this.settingsService.initializeTheme();
+  }
 }

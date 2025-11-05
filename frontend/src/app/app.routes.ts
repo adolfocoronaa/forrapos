@@ -9,6 +9,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { LayoutComponent } from './components/layout/layout.component';
 import { MovimientoInventarioComponent } from './components/movimiento-inventario/movimiento-inventario.component';
 import { EstadisticasComponent } from './components/statistics/statistics.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 export const routes: Routes = [
   // 👇 Si no se escribe nada, redirige al login
@@ -29,7 +30,8 @@ export const routes: Routes = [
       { path: 'productos', component: ProductosComponent },
       { path: 'admin', component: AdminComponent },
       { path: 'inventario', component: MovimientoInventarioComponent },
-      { path: 'estadisticas', component: EstadisticasComponent }
+      { path: 'estadisticas', component: EstadisticasComponent },
+      { path: 'configuracion', component: SettingsComponent }
     ]
   },
 
