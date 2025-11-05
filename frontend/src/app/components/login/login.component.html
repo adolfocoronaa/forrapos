@@ -1,16 +1,19 @@
 <!-- ================================================================
-  Pantalla de Autenticación - Login y Registro
-  Descripción: Página de inicio de sesión con formulario reactivo
-               y modal para registro de nuevos usuarios.
-  Fecha: 20/03/2025
-  Dependencias: Angular Forms (ReactiveFormsModule), Bootstrap 5, Bootstrap Icons
+  Pantalla de Autenticación - Login y Registro
 ===================================================================-->
 
 <!-- Contenedor principal centrado vertical y horizontal -->
 <div class="container vh-100 d-flex justify-content-center align-items-center">
 
-  <!-- Tarjeta de login con imagen y formulario -->
-  <div class="row w-100 shadow-lg rounded" style="max-width: 900px; background-color: #f8f9fa;">
+  <!-- 
+    Tarjeta de login con imagen y formulario 
+    =========================================
+    ¡¡CAMBIO IMPORTANTE!!
+    - Quitamos el style="background-color: #f8f9fa;"
+    - Añadimos la clase "login-card" para que sea controlada por styles.css
+    =========================================
+  -->
+  <div class="row w-100 shadow-lg rounded login-card" style="max-width: 900px;">
 
     <!-- Columna izquierda con imagen decorativa (oculta en móviles) -->
     <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center p-4">
@@ -19,7 +22,13 @@
 
     <!-- Formulario de inicio de sesión -->
     <div class="col-md-6 p-5">
-      <h2 class="text-center mb-4" style="color: #002147;">Iniciar Sesión</h2>
+      <!-- 
+        =========================================
+        ¡¡CAMBIO IMPORTANTE!!
+        - Quitamos el style="color: #002147;"
+        =========================================
+      -->
+      <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
       <!-- Formulario reactivo con validaciones -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -48,7 +57,7 @@
           <label for="rememberMe" class="form-check-label">Recordarme</label>
         </div>
 
-        <!-- Botón de envío -->
+        <!-- Botón de envío (Lo dejamos como está, es un color de marca) -->
         <button type="submit" class="btn w-100 rounded-pill shadow-sm"
                 style="background-color: #002147; color: white;"
                 [disabled]="loginForm.invalid">
@@ -72,15 +81,14 @@
 </div>
 
 <!-- ================================================================
-  Modal de Registro
-  Descripción: Formulario de registro para nuevos usuarios
-  con validaciones de campos y confirmación de contraseña.
+  Modal de Registro
+  (Este modal usará .modal-content de nuestro styles.css y se adaptará)
 ===================================================================-->
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
 
-      <!-- Encabezado del modal -->
+      <!-- Encabezado del modal (Lo dejamos como está, es un color de marca) -->
       <div class="modal-header"
            style="background: linear-gradient(90deg, #002147, #0056b3); color: white; padding: 1.5rem;">
         <h5 class="modal-title d-flex align-items-center fw-bold" id="registerModalLabel">
