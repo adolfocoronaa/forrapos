@@ -29,6 +29,7 @@ export class VentasComponent implements OnInit {
   yearsArray: number[] = [];
   ventaSeleccionada: Venta | null = null;
   mostrarModalDetalles: boolean = false;
+  isAdmin: boolean = false;
   
   usoCfdiLabels: { [clave: string]: string } = {
     G01: 'G01 - Adquisición de mercancías',
@@ -83,6 +84,10 @@ export class VentasComponent implements OnInit {
   constructor(private ventasService: VentasService, private toast: ToastService, private pdfService: PdfService) {}
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userRole = localStorage.getItem('rol');
+      this.isAdmin = userRole === 'Administrador';
+    }
     this.cargarVentas();
     this.cargarProductos();
     const currentYear = new Date().getFullYear();

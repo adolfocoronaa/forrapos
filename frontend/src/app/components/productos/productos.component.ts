@@ -23,6 +23,8 @@ export class ProductosComponent implements OnInit, AfterViewInit {
   terminoBusqueda: string = '';
   // --- Fin de Cambios ---
 
+  isAdmin: boolean = false;
+
   // ... (Variables de modales sin cambios)
   private modalProductoElement: any;
   modalProducto: any;
@@ -38,6 +40,10 @@ export class ProductosComponent implements OnInit, AfterViewInit {
   constructor(private productoService: ProductoService) {}
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userRole = localStorage.getItem('rol');
+      this.isAdmin = userRole === 'Administrador';
+    }
     this.cargarProductos();
   }
 

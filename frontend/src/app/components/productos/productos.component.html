@@ -5,7 +5,7 @@
   <div class="row mb-3">
     <div class="col-md-6">
       <!-- Este botón ahora abre el modal de producto -->
-      <button class="btn btn-primary" (click)="abrirModalCrear()">
+      <button class="btn btn-primary" (click)="abrirModalCrear()" *ngIf="isAdmin">
         <i class="bi bi-plus-circle"></i> Nuevo Producto
       </button>
     </div>
@@ -70,7 +70,7 @@
             </span>
           </td>
           <td class="text-center text-nowrap">
-            <div class="btn-group" role="group">
+            <div class="btn-group" role="group" *ngIf="isAdmin">
               <!-- Botón para abrir modal de edición -->
               <button
                 class="btn btn-sm btn-outline-secondary"

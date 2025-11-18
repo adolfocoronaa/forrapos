@@ -175,6 +175,11 @@
           <td>${{ v.total }}</td>
           <!-- Productos -->
           <td>
+            <div *ngIf="!v.editando">
+              <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
+                <div class="col-4">{{ d.producto }}</div>
+              </div>
+            </div>
             <div *ngIf="v.editando">
               <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
                 <!-- Selector de producto -->
@@ -209,7 +214,7 @@
                     <i class="fa fa-eye me-2"></i> Ver detalles
                   </a>
                 </li>
-                <li>
+                <li *ngIf="isAdmin">
                   <a class="dropdown-item" (click)="editarCompra(v)">
                     <i class="fa fa-edit me-2"></i> Editar compra
                   </a>
@@ -229,14 +234,16 @@
                     <i class="fa fa-print me-2"></i> Imprimir
                   </a>
                 </li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li>
-                  <a class="dropdown-item text-danger" (click)="eliminarCompra(v)">
-                    <i class="fa fa-trash me-2"></i> Eliminar
-                  </a>
-                </li>
+                <ng-container *ngIf="isAdmin">
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" (click)="eliminarCompra(v)">
+                      <i class="fa fa-trash me-2"></i> Eliminar
+                    </a>
+                  </li>
+                </ng-container>
               </ul>
             </div>
             <div *ngIf="v.editando" class="d-flex gap-2">
