@@ -30,6 +30,7 @@ export class ComprasComponent implements OnInit {
   compraSeleccionada: Compra | null = null;
   yearsArray: number[] = [];
   mostrarModalDetalles: boolean = false;
+  isAdmin: boolean = false;
   
   nuevaCompra: any = {
     proveedorId: null,
@@ -52,6 +53,10 @@ export class ComprasComponent implements OnInit {
   constructor(private comprasService: ComprasService, private toast: ToastService, private pdfService: PdfService) {}
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userRole = localStorage.getItem('rol');
+      this.isAdmin = userRole === 'Administrador';
+    }
     this.cargarCompras();
     this.cargarProductos();
     this.cargarProveedores();

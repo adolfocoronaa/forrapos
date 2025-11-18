@@ -15,6 +15,7 @@ import { MovimientoInventario } from './movimiento-inventario.model';
 export class MovimientoInventarioComponent implements OnInit {
   productos: Producto[] = [];
   movimientos: MovimientoInventario[] = [];
+  isAdmin: boolean = false;
 
   // Modelo para el formulario
   nuevoMovimiento: MovimientoInventario = {
@@ -32,6 +33,10 @@ export class MovimientoInventarioComponent implements OnInit {
   constructor(private inventarioService: InventarioService) {}
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userRole = localStorage.getItem('rol');
+      this.isAdmin = userRole === 'Administrador';
+    }
     this.cargarProductos();
     this.cargarMovimientos();
   }

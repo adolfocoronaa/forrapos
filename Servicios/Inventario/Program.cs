@@ -26,8 +26,8 @@ public class Program
                     // Configuración del contexto de base de datos con MySQL
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseMySql(
-                            "server=localhost;database=forrapos;user=root;password=root",
-                            ServerVersion.AutoDetect("server=localhost;database=forrapos;user=root;password=root"))
+                            "server=forrapos-db.cpc08ee2ij63.us-east-2.rds.amazonaws.com;database=forrapos;user=admin;password=Clavadovolador1#",
+                            ServerVersion.AutoDetect("server=forrapos-db.cpc08ee2ij63.us-east-2.rds.amazonaws.com;database=forrapos;user=admin;password=Clavadovolador1#"))
                     );
 
                     // Registro de los controladores para la API

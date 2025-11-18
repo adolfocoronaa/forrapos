@@ -88,41 +88,43 @@
     TABLA DE VENTAS
     Descripción: Tabla con las ventas filtradas y sus detalles.
   =================================================== -->
-  <table class="table table-bordered table-sm mt-3" *ngIf="nuevaCompra.detalles.length > 0">
-    <thead class="table-light">
-      <tr>
-        <th>Imagen</th>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio Unitario</th>
-        <th>Subtotal</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let d of nuevaCompra.detalles; let i = index">
-        <td>
-          <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto }}"
-               class="img-thumbnail" width="50">
-        </td>
-        <td>{{ d.producto }}</td>
-        <td>{{ d.cantidad }}</td>
-        <td>${{ d.precioUnitario }}</td>
-        <td>${{ d.subtotal }}</td>
-        <td>
-          <button class="btn btn-sm btn-danger" type="button" (click)="quitarProducto(i)">
-            <i class="fa fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <th colspan="4">Total</th>
-        <th colspan="2">${{ nuevaCompra.total }}</th>
-      </tr>
-    </tfoot>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm mt-3" *ngIf="nuevaCompra.detalles.length > 0">
+      <thead class="table-light">
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of nuevaCompra.detalles; let i = index">
+          <td>
+            <img *ngIf="d.producto.imagenUrl" [src]="d.producto.imagenUrl" alt="{{ d.producto }}"
+                class="img-thumbnail" width="50">
+          </td>
+          <td>{{ d.producto }}</td>
+          <td>{{ d.cantidad }}</td>
+          <td>${{ d.precioUnitario }}</td>
+          <td>${{ d.subtotal }}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" type="button" (click)="quitarProducto(i)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4">Total</th>
+          <th colspan="2">${{ nuevaCompra.total }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 
   <!-- ==================================================
     BOTÓN PARA ABRIR MODAL
@@ -132,121 +134,131 @@
     <i class="fa fa-plus"></i> Nueva Compra
   </button>
 
-  <table class="table table-bordered table-hover mt-4" *ngIf="comprasFiltradas.length > 0">
-    <thead class="table-dark">
-      <tr>
-        <th>
-          <input type="checkbox" (change)="toggleSeleccionarTodas($event)">
-        </th>
-        <th>Folio</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th>Total</th>
-        <th>Productos</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr [class.table-warning]="v.editando" *ngFor="let v of comprasPaginadas">
-        <td>
-          <input type="checkbox" [(ngModel)]="v.seleccionado">
-        </td>
-         <!-- Folio (no editable) -->
-        <td>{{ v.folio }}</td>
+  
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover mt-4" *ngIf="comprasFiltradas.length > 0">
+      <thead class="table-dark">
+        <tr>
+          <th>
+            <input type="checkbox" (change)="toggleSeleccionarTodas($event)">
+          </th>
+          <th>Folio</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Total</th>
+          <th>Productos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr [class.table-warning]="v.editando" *ngFor="let v of comprasPaginadas">
+          <td>
+            <input type="checkbox" [(ngModel)]="v.seleccionado">
+          </td>
+          <!-- Folio (no editable) -->
+          <td>{{ v.folio }}</td>
 
-        <!-- Fecha -->
-        <td *ngIf="!v.editando">{{ v.fecha | date:'short' }}</td>
-        <td *ngIf="v.editando">
-          <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="v.fecha">
-        </td>
-        <!-- Estado -->
-        <td *ngIf="!v.editando">{{ v.estado }}</td>
-        <td *ngIf="v.editando">
-          <select class="form-select form-select-sm" [(ngModel)]="v.estado">
-            <option value="Completado">Completado</option>
-            <option value="Pendiente">Pendiente</option>
-          </select>
-        </td>
-        <!-- Total (sólo lectura)-->
-        <td>${{ v.total }}</td>
-        <!-- Productos -->
-        <td>
-          <div *ngIf="v.editando">
-            <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
-              <!-- Selector de producto -->
-              <div class="col-4">
-                <select class="form-select form-select-sm" [(ngModel)]="d.productoId">
-                  <option *ngFor="let p of productos" [value]="p.id">{{ p.name }}</option>
-                </select>
-              </div>
-              <!-- Cantidad -->
-              <div class="col-3">
-                <input type="number" class="form-control form-control-sm" [(ngModel)]="d.cantidad" (change)="recalcularTotal(v)">
-              </div>
-              <!-- Precio -->
-              <div class="col-3">
-                <input type="number" class="form-control form-control-sm" [(ngModel)]="d.precioUnitario" (change)="recalcularTotal(v)">
-              </div>
-              <!-- Subtotal -->
-              <div class="col-2">
-                <span class="form-control-plaintext">${{ d.cantidad * d.precioUnitario }}</span>
+          <!-- Fecha -->
+          <td *ngIf="!v.editando">{{ v.fecha | date:'short' }}</td>
+          <td *ngIf="v.editando">
+            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="v.fecha">
+          </td>
+          <!-- Estado -->
+          <td *ngIf="!v.editando">{{ v.estado }}</td>
+          <td *ngIf="v.editando">
+            <select class="form-select form-select-sm" [(ngModel)]="v.estado">
+              <option value="Completado">Completado</option>
+              <option value="Pendiente">Pendiente</option>
+            </select>
+          </td>
+          <!-- Total (sólo lectura)-->
+          <td>${{ v.total }}</td>
+          <!-- Productos -->
+          <td>
+            <div *ngIf="!v.editando">
+              <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
+                <div class="col-4">{{ d.producto }}</div>
               </div>
             </div>
-          </div>
-        </td>
-        <td>
-          <div *ngIf="!v.editando" class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa fa-cogs"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" (click)="verDetalles(v)">
-                  <i class="fa fa-eye me-2"></i> Ver detalles
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" (click)="editarCompra(v)">
-                  <i class="fa fa-edit me-2"></i> Editar compra
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" (click)="generarReporte(v)">
-                  <i class="fa fa-file-pdf me-2"></i> Generar reporte
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" (click)="duplicarCompra(v)">
-                  <i class="fa fa-clone me-2"></i> Duplicar Compra
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" (click)="imprimirCompra(v)">
-                  <i class="fa fa-print me-2"></i> Imprimir
-                </a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li>
-                <a class="dropdown-item text-danger" (click)="eliminarCompra(v)">
-                  <i class="fa fa-trash me-2"></i> Eliminar
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div *ngIf="v.editando" class="d-flex gap-2">
-            <button class="btn btn-outline-success btn-sm" (click)="guardarCompra(v)" title="Guardar cambios">
-              <i class="fa fa-save"></i>
-            </button>
-            <button class="btn btn-outline-secondary btn-sm" (click)="v.editando = false" title="Cancelar edición">
-              <i class="fa fa-times"></i>
-            </button>
-          </div>
-        </td>   
-      </tr>
-    </tbody>
-  </table>
+            <div *ngIf="v.editando">
+              <div *ngFor="let d of v.detalles" class="mb-2 row g-1">
+                <!-- Selector de producto -->
+                <div class="col-4">
+                  <select class="form-select form-select-sm" [(ngModel)]="d.productoId">
+                    <option *ngFor="let p of productos" [value]="p.id">{{ p.name }}</option>
+                  </select>
+                </div>
+                <!-- Cantidad -->
+                <div class="col-3">
+                  <input type="number" class="form-control form-control-sm" [(ngModel)]="d.cantidad" (change)="recalcularTotal(v)">
+                </div>
+                <!-- Precio -->
+                <div class="col-3">
+                  <input type="number" class="form-control form-control-sm" [(ngModel)]="d.precioUnitario" (change)="recalcularTotal(v)">
+                </div>
+                <!-- Subtotal -->
+                <div class="col-2">
+                  <span class="form-control-plaintext">${{ d.cantidad * d.precioUnitario }}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="!v.editando" class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-cogs"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" (click)="verDetalles(v)">
+                    <i class="fa fa-eye me-2"></i> Ver detalles
+                  </a>
+                </li>
+                <li *ngIf="isAdmin">
+                  <a class="dropdown-item" (click)="editarCompra(v)">
+                    <i class="fa fa-edit me-2"></i> Editar compra
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="generarReporte(v)">
+                    <i class="fa fa-file-pdf me-2"></i> Generar reporte
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="duplicarCompra(v)">
+                    <i class="fa fa-clone me-2"></i> Duplicar Compra
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="imprimirCompra(v)">
+                    <i class="fa fa-print me-2"></i> Imprimir
+                  </a>
+                </li>
+                <ng-container *ngIf="isAdmin">
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" (click)="eliminarCompra(v)">
+                      <i class="fa fa-trash me-2"></i> Eliminar
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+            <div *ngIf="v.editando" class="d-flex gap-2">
+              <button class="btn btn-outline-success btn-sm" (click)="guardarCompra(v)" title="Guardar cambios">
+                <i class="fa fa-save"></i>
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="v.editando = false" title="Cancelar edición">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          </td>   
+        </tr>
+      </tbody>
+    </table>
+  </div>
   
 
   <!-- ==================================================

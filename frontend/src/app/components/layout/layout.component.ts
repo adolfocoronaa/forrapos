@@ -12,6 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 export class LayoutComponent {
   userName: string = '';
   isAdmin: boolean = false;
+  public isSidebarOpen = false;
 
   constructor(private router: Router) {}
 
@@ -29,5 +30,9 @@ export class LayoutComponent {
   logout() {
     localStorage.clear();
     this.router.navigate(['/login']);
+  }
+
+  toggleSidebar() { // <<< AÑADIR ESTA FUNCIÓN
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 }

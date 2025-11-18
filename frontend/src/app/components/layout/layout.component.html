@@ -1,6 +1,10 @@
-<div class="d-flex">
+<button class="btn btn-primary d-md-none" (click)="toggleSidebar()" style="position: fixed; top: 15px; left: 15px; z-index: 1050;">
+  <i class="fa-solid fa-bars"></i>
+</button>
+
+<div class="d-flex layout-wrapper" [class.sidebar-abierto]="isSidebarOpen">
   <!-- SIDEBAR restaurado con diseño original -->
-  <aside class="bg-dark text-white p-3 vh-100 d-flex flex-column" style="width: 250px;">
+  <aside class="app-sidebar bg-dark text-white p-3 vh-100 d-flex flex-column">
     <!-- Panel de Usuario -->
     <div class="text-center mb-4">
       <img src="img/user-avatar.png" alt="Usuario" class="img-fluid rounded-circle mb-2" style="width: 80px;">
